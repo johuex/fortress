@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class Ogon : MonoBehaviour
 {
-    public ParticleSystem dim;
+    public GameObject ObjectWithParticleSystem;
+    private GameObject cloned;
+    public Transform muzzle; //дуло, точка вылета
 
     private void Start()
     {
-        dim = GetComponent<ParticleSystem>();
-        dim.Stop();
+        ObjectWithParticleSystem.GetComponent<ParticleSystem>().Stop();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (Input.GetButtonDown("Fire1"))
         {
@@ -22,7 +23,8 @@ public class Ogon : MonoBehaviour
 
     private void Shot()
     {
-        dim.Play();
-
+        cloned = Instantiate(ObjectWithParticleSystem, muzzle.position, muzzle.rotation);
+        cloned.GetComponent<ParticleSystem>().Play();
+        Destroy(gameObject, GetComponent<ParticleSystem>().duration);
     }
 }

@@ -8,7 +8,7 @@ public class Move : MonoBehaviour
     public float speed = 10.0f;
     Rigidbody rigidBody;
     float horizontal;
-    float vertical;
+    float vertical_move;
 
     //чувсвительность камеры
     public float sensitiveX = 3.0F;
@@ -49,29 +49,27 @@ public class Move : MonoBehaviour
             SceneManager.LoadScene(0);
         }
 
-        //horizontal = Input.GetAxis("Horizontal");
-        vertical = Input.GetAxis("Vertical");
-        rigidBody.AddForce(((transform.right * horizontal) + (transform.forward * vertical)) * speed / Time.deltaTime);
+        vertical_move = Input.GetAxis("Vertical");
+        rigidBody.AddForce(((transform.right * horizontal) + (transform.forward * vertical_move)) * speed / Time.deltaTime);
 
-        rotX += Input.GetAxis("Mouse X") * sensitiveX;
-        rotY += Input.GetAxis("Mouse Y") * sensitiveY;
+        // можем поворачивать мышью только когда не двигаемся вперед-назад
+        if (vertical_move != 0.0)
+        {
+            rotX += Input.GetAxis("Mouse X") * sensitiveX;
+            rotY += Input.GetAxis("Mouse Y") * sensitiveY;
 
-        rotX = rotX % 360;
-        rotY = rotY % 360;
+            rotX = rotX % 360;
+            rotY = rotY % 360;
 
-        //ограничение движения камеры по осям
-        rotX = Mathf.Clamp(rotX, minX, maxX);
-        rotY = Mathf.Clamp(rotY, minY, maxY);
+            //ограничение движения камеры по осям
+            rotX = Mathf.Clamp(rotX, minX, maxX);
+            rotY = Mathf.Clamp(rotY, minY, maxY);
 
-        //поворот на угол вокруг осей
-        xQuaternion = Quaternion.AngleAxis(rotX, Vector3.up);
-        yQuaternion = Quaternion.AngleAxis(rotY, Vector3.left);
+            //поворот на угол вокруг осей
+            xQuaternion = Quaternion.AngleAxis(rotX, Vector3.up);
+            yQuaternion = Quaternion.AngleAxis(rotY, Vector3.left);
 
-        transform.localRotation = originalRot * xQuaternion * yQuaternion;
-
-
-
-        //////////
-
+            transform.localRotation = originalRot * xQuaternion * yQuaternion;
+        }
     }
 }
